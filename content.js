@@ -1,132 +1,163 @@
-let button = null;
-let selectedText = "";
+let button = null
+let selectedText = ""
+let conversation = []
 
-document.addEventListener("mouseup", function () {
+document.addEventListener("mouseup", () => {
 
-selectedText = window.getSelection().toString().trim();
+selectedText = window.getSelection().toString().trim()
 
 if(selectedText.length === 0){
+
 if(button){
-button.remove();
-button=null;
-}
-return;
+button.remove()
+button=null
 }
 
-if(button) button.remove();
+return
+}
 
-let rect = window.getSelection().getRangeAt(0).getBoundingClientRect();
+if(button) button.remove()
 
-button = document.createElement("button");
-button.innerText="Explain";
+const rect = window.getSelection().getRangeAt(0).getBoundingClientRect()
 
-button.style.position="absolute";
-button.style.top=(rect.top+window.scrollY)+"px";
-button.style.left=(rect.right+window.scrollX)+"px";
-button.style.zIndex="9999";
-button.style.background="black";
-button.style.color="white";
-button.style.padding="6px 10px";
-button.style.border="none";
-button.style.borderRadius="6px";
-button.style.cursor="pointer";
-button.style.fontSize="12px";
+button = document.createElement("button")
+button.innerText="Explain"
 
-document.body.appendChild(button);
+button.style.position="absolute"
+button.style.top=(rect.top+window.scrollY)+"px"
+button.style.left=(rect.right+window.scrollX)+"px"
+button.style.zIndex="9999"
+button.style.background="black"
+button.style.color="white"
+button.style.padding="6px 10px"
+button.style.border="none"
+button.style.borderRadius="6px"
+button.style.cursor="pointer"
+button.style.fontSize="12px"
 
-button.addEventListener("mousedown",openBubble);
+document.body.appendChild(button)
 
-});
+button.addEventListener("mousedown",openBubble)
+
+})
 
 function openBubble(e){
 
-e.preventDefault();
-e.stopPropagation();
+e.preventDefault()
 
-let oldBubble=document.getElementById("aiBubble");
-if(oldBubble) oldBubble.remove();
+let old = document.getElementById("aiBubble")
+if(old) old.remove()
 
-let bubble=document.createElement("div");
-bubble.id="aiBubble";
+const bubble = document.createElement("div")
+bubble.id="aiBubble"
 
-bubble.style.position="fixed";
-bubble.style.top="200px";
-bubble.style.left="200px";
-bubble.style.width="320px";
-bubble.style.background="white";
-bubble.style.borderRadius="8px";
-bubble.style.boxShadow="0 4px 20px rgba(0,0,0,0.2)";
-bubble.style.zIndex="9999";
-bubble.style.fontFamily="Arial";
+bubble.style.position="fixed"
+bubble.style.top="200px"
+bubble.style.left="200px"
+bubble.style.width="340px"
+bubble.style.background="white"
+bubble.style.borderRadius="8px"
+bubble.style.boxShadow="0 4px 20px rgba(0,0,0,0.2)"
+bubble.style.zIndex="9999"
+bubble.style.fontFamily="Arial"
 
-document.body.appendChild(bubble);
+document.body.appendChild(bubble)
 
-let header=document.createElement("div");
-header.innerText="AI Explainer 🤖";
-header.style.background="#111";
-header.style.color="white";
-header.style.padding="8px";
-header.style.cursor="move";
-header.style.display="flex";
-header.style.justifyContent="space-between";
-header.style.alignItems="center";
+const header = document.createElement("div")
+header.innerText="AI Explainer 🤖"
+header.style.background="#111"
+header.style.color="white"
+header.style.padding="8px"
+header.style.cursor="move"
+header.style.display="flex"
+header.style.justifyContent="space-between"
 
-let close=document.createElement("span");
-close.innerText="✖";
-close.style.cursor="pointer";
-close.onclick=()=>bubble.remove();
+const close = document.createElement("span")
+close.innerText="✖"
+close.style.cursor="pointer"
+close.onclick=()=>bubble.remove()
 
-header.appendChild(close);
+header.appendChild(close)
 
-let actionBar=document.createElement("div");
-actionBar.style.display="flex";
-actionBar.style.gap="5px";
-actionBar.style.padding="5px";
-actionBar.style.background="#eee";
+const actions = document.createElement("div")
+actions.style.display="flex"
+actions.style.flexWrap="wrap"
+actions.style.gap="4px"
+actions.style.padding="6px"
+actions.style.background="#eee"
 
-let content=document.createElement("div");
-content.style.padding="10px";
-content.style.fontSize="13px";
-content.style.maxHeight="200px";
-content.style.overflowY="auto";
-content.innerText="🤖 Thinking...";
+const content = document.createElement("div")
+content.style.padding="10px"
+content.style.maxHeight="220px"
+content.style.overflowY="auto"
+content.style.fontSize="13px"
+content.style.whiteSpace="pre-wrap"
+content.innerText="🤖 Thinking..."
 
-bubble.appendChild(header);
-bubble.appendChild(actionBar);
-bubble.appendChild(content);
+const chatBox = document.createElement("input")
+chatBox.placeholder="Ask follow-up..."
+chatBox.style.width="100%"
+chatBox.style.padding="6px"
+chatBox.style.border="none"
+chatBox.style.borderTop="1px solid #ddd"
+chatBox.style.outline="none"
 
-function createActionButton(label,prompt){
+bubble.appendChild(header)
+bubble.appendChild(actions)
+bubble.appendChild(content)
+bubble.appendChild(chatBox)
 
-let btn=document.createElement("button");
+makeDraggable(header,bubble)
 
-btn.innerText=label;
+function createBtn(label,prompt){
 
-btn.style.flex="1";
-btn.style.padding="4px";
-btn.style.background="#fff";
-btn.style.color="black";
-btn.style.border="1px solid #ddd";
-btn.style.borderRadius="4px";
-btn.style.cursor="pointer";
-btn.style.fontSize="12px";
+const b=document.createElement("button")
 
-btn.onclick=()=>{
-content.innerText="🤖 Thinking...";
-fetchAI(prompt+selectedText,content);
+b.innerText=label
+b.style.flex="1"
+b.style.padding="4px"
+b.style.fontSize="11px"
+b.style.border="1px solid #ddd"
+b.style.borderRadius="4px"
+b.style.cursor="pointer"
+b.style.background="white"
+b.style.color="black"
+
+b.onclick=()=>{
+content.innerText="🤖 Thinking..."
+conversation=[]
+fetchAI(prompt+selectedText,content)
 }
 
-return btn;
+return b
 
 }
 
-actionBar.appendChild(createActionButton("Explain","Explain this simply: "));
-actionBar.appendChild(createActionButton("Summarize","Summarize this: "));
-actionBar.appendChild(createActionButton("Simplify","Explain like I'm 10: "));
-actionBar.appendChild(createActionButton("Translate","Translate to English: "));
+actions.appendChild(createBtn("Explain","Explain this simply: "))
+actions.appendChild(createBtn("Summarize","Summarize this: "))
+actions.appendChild(createBtn("Simplify","Explain like I'm 10: "))
+actions.appendChild(createBtn("Translate","Translate to English: "))
+actions.appendChild(createBtn("Rewrite","Rewrite this clearly: "))
+actions.appendChild(createBtn("Quiz","Generate 3 quiz questions from: "))
 
-fetchAI("Explain this simply: "+selectedText,content);
+fetchAI("Explain this simply: "+selectedText,content)
 
-makeDraggable(header,bubble);
+chatBox.addEventListener("keydown",(e)=>{
+
+if(e.key==="Enter"){
+
+const q=chatBox.value.trim()
+if(!q) return
+
+chatBox.value=""
+
+conversation.push({role:"user",content:q})
+
+fetchAI(q,content)
+
+}
+
+})
 
 }
 
@@ -137,13 +168,15 @@ chrome.storage.local.get(["groqApiKey"],r=>resolve(r.groqApiKey))
 })
 
 if(!key){
-content.innerText="Add API key in popup";
-return;
+
+content.innerText="Add API key in popup"
+return
+
 }
 
-content.innerText="";
+conversation.push({role:"user",content:prompt})
 
-const response=await fetch(
+const response = await fetch(
 "https://api.groq.com/openai/v1/chat/completions",
 {
 method:"POST",
@@ -154,40 +187,42 @@ headers:{
 body:JSON.stringify({
 model:"llama-3.1-8b-instant",
 stream:true,
-messages:[
-{role:"user",content:prompt}
-]
+messages:conversation
 })
 }
 )
 
-const reader=response.body.getReader();
-const decoder=new TextDecoder();
+content.innerText=""
+
+const reader=response.body.getReader()
+const decoder=new TextDecoder()
 
 while(true){
 
-const {done,value}=await reader.read();
-if(done) break;
+const {done,value}=await reader.read()
+if(done) break
 
-const chunk=decoder.decode(value);
-const lines=chunk.split("\n");
+const chunk=decoder.decode(value)
+const lines=chunk.split("\n")
 
-for(let line of lines){
+for(const line of lines){
 
 if(line.startsWith("data: ")){
 
-let data=line.replace("data: ","");
+const data=line.replace("data: ","")
 
-if(data==="[DONE]") return;
+if(data==="[DONE]") return
 
 try{
 
-let json=JSON.parse(data);
-let token=json.choices?.[0]?.delta?.content;
+const json=JSON.parse(data)
+const token=json.choices?.[0]?.delta?.content
 
-if(token) content.innerText+=token;
+if(token){
+content.innerText+=token
+}
 
-}catch(e){}
+}catch{}
 
 }
 
@@ -199,32 +234,32 @@ if(token) content.innerText+=token;
 
 function makeDraggable(header,bubble){
 
-let isDragging=false;
-let offsetX=0;
-let offsetY=0;
+let drag=false
+let offsetX=0
+let offsetY=0
 
 header.addEventListener("mousedown",(e)=>{
 
-isDragging=true;
+drag=true
 
-const rect=bubble.getBoundingClientRect();
+const rect=bubble.getBoundingClientRect()
 
-offsetX=e.clientX-rect.left;
-offsetY=e.clientY-rect.top;
+offsetX=e.clientX-rect.left
+offsetY=e.clientY-rect.top
 
-});
+})
 
 document.addEventListener("mousemove",(e)=>{
 
-if(!isDragging) return;
+if(!drag) return
 
-bubble.style.left=(e.clientX-offsetX)+"px";
-bubble.style.top=(e.clientY-offsetY)+"px";
+bubble.style.left=(e.clientX-offsetX)+"px"
+bubble.style.top=(e.clientY-offsetY)+"px"
 
-});
+})
 
 document.addEventListener("mouseup",()=>{
-isDragging=false;
-});
+drag=false
+})
 
 }
