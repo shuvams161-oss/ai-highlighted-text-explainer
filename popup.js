@@ -47,6 +47,7 @@ button.addEventListener("click", async function() {
         },
         body: JSON.stringify({
           model:"llama3-8b-8192",
+          stream: true
           messages:[
             {role:"user",content:"Explain gravity simply"}
           ]
