@@ -3,7 +3,15 @@
   "version": "1.0",
   "manifest_version": 3,
 
-  "permissions": ["activeTab","scripting"],
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+
+  "host_permissions": [
+    "https://api.groq.com/*"
+  ],
 
   "action": {
     "default_popup": "popup.html"
