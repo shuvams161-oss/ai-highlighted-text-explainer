@@ -1,9 +1,9 @@
 // SAVE API KEY
 document.getElementById("saveKey").addEventListener("click", ) => {
 
-  let key = document.getElementById("apiKeyInput").value.trim();
+  const key = document.getElementById("apiKeyInput").value.trim();
 
-  if(!key){
+  if (!key) {
     alert("Please enter your Groq API key");
     return;
   }
@@ -15,51 +15,58 @@ document.getElementById("saveKey").addEventListener("click", ) => {
 });
 
 
-// LOAD SAVED KEY WHEN POPUP OPENS
+// LOAD SAVED KEY
 chrome.storage.local.get(["groqApiKey"], (result) => {
-  if(result.groqApiKey){
+
+  if (result.groqApiKey) {
     document.getElementById("apiKeyInput").value = result.groqApiKey;
   }
+
 });
 
 
 // TEST AI BUTTON
-let button = document.getElementById("explain");
+const button = document.getElementById("explain");
 
-button.addEventListener("click", async function() {
+button.addEventListener("click", async () => {
 
   chrome.storage.local.get(["groqApiKey"], async (result) => {
 
-    let key = result.groqApiKey;
+    const key = result.groqApiKey;
 
-    if(!key){
+    if (!key) {
       alert("Please save your Groq API key first");
       return;
     }
 
-    try{
+    try {
 
-      const response = await fetch("https://api.groq.com/openai/v1/chat/completions",{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json",
-          "Authorization":"Bearer " + key
-        },
-        body: JSON.stringify({
-          model:"llama3-8b-8192",
-          messages:[
-            {role:"user",content:"Explain gravity simply"}
-          ]
-        })
-      });
+      const response = await fetch(
+        "https://api.groq.com/openai/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + key
+          },
+          body: JSON.stringify({
+            model: "llama-3.1-8b-instant",
+            messages: [
+              { role: "user", content: "Explain what artificial intelligence is in simple terms." }
+            ]
+          })
+        }
+      );
 
       const data = await response.json();
 
       alert(data.choices[0].message.content);
 
-    }catch(error){
+    } catch (error) {
+
       console.error(error);
       alert("Something went wrong");
+
     }
 
   });
