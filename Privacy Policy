@@ -1,0 +1,9 @@
+Privacy Policy
+
+AI Explainer does not collect or store personal user data.
+
+The extension allows users to input their own API key, which is stored locally in the browser and never transmitted to the developer.
+
+When users select text and request an explanation, the selected text is sent directly to the AI service provider using the user’s API key.
+
+No browsing history, personal identity information, or analytics data are collected or stored by the extension.
