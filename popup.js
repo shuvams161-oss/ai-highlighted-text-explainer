@@ -1,15 +1,15 @@
 // SAVE API KEY
-document.getElementById("saveKey").addEventListener("click", ) => {
+document.getElementById("saveKey").addEventListener("click", () => {
 
   const key = document.getElementById("apiKeyInput").value.trim();
 
   if (!key) {
-    alert("Enter Groq API key");
+    alert("Please enter your Groq API key");
     return;
   }
 
   chrome.storage.local.set({ groqApiKey: key }, () => {
-    alert("API Key Saved");
+    alert("API Key Saved!");
   });
 
 });
@@ -25,15 +25,17 @@ chrome.storage.local.get(["groqApiKey"], (result) => {
 });
 
 
-// TEST BUTTON
-document.getElementById("explain").addEventListener("click", async () => {
+// TEST AI BUTTON
+const button = document.getElementById("explain");
+
+button.addEventListener("click", async () => {
 
   chrome.storage.local.get(["groqApiKey"], async (result) => {
 
     const key = result.groqApiKey;
 
     if (!key) {
-      alert("Save API key first");
+      alert("Please save your Groq API key first");
       return;
     }
 
@@ -50,7 +52,7 @@ document.getElementById("explain").addEventListener("click", async () => {
           body: JSON.stringify({
             model: "llama-3.1-8b-instant",
             messages: [
-              { role: "user", content: "Explain artificial intelligence simply." }
+              { role: "user", content: "Explain what artificial intelligence is in simple terms." }
             ]
           })
         }
@@ -60,10 +62,10 @@ document.getElementById("explain").addEventListener("click", async () => {
 
       alert(data.choices[0].message.content);
 
-    } catch (err) {
+    } catch (error) {
 
-      console.error(err);
-      alert("API error");
+      console.error(error);
+      alert("Something went wrong");
 
     }
 
